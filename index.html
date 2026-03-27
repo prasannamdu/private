@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>psst... this is for you 🤫</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Dancing+Script:wght@600;700&display=swap');
+
+  :root {
+    --pink: #ff6b9d;
+    --yellow: #ffd93d;
+    --mint: #6bcb77;
+    --sky: #4d96ff;
+    --orange: #ff922b;
+    --cream: #fff9f0;
+    --dark: #2d2d2d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* FLOATING HEARTS BG */
+  .hearts-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .heart-float {
+    position: absolute;
+    bottom: -50px;
+    font-size: 1.5rem;
+    animation: floatUp linear infinite;
+    opacity: 0.15;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
+    100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* SCREEN SYSTEM */
+  .screen {
+    display: none;
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    padding: 20px 16px 40px;
+  }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  /* ===================== SCREEN 1 - KNOCK KNOCK ===================== */
+  #s1 {
+    background: linear-gradient(160deg, #ffe0ec 0%, #fff9f0 60%, #e0f0ff 100%);
+    text-align: center;
+  }
+  .knock-emoji { font-size: 4rem; animation: knockknock 0.8s ease-in-out infinite alternate; display: block; margin-bottom: 10px; }
+  @keyframes knockknock { from { transform: rotate(-15deg) translateX(-5px); } to { transform: rotate(15deg) translateX(5px); } }
+  .s1-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    color: var(--pink);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .s1-sub {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.4rem;
+    color: #666;
+    margin-bottom: 30px;
+  }
+  .btn-main {
+    background: var(--pink);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #c94777;
+    transition: transform 0.1s, box-shadow 0.1s;
+    position: relative;
+  }
+  .btn-main:active { transform: translateY(4px); box-shadow: 0 2px 0 #c94777; }
+  .btn-main:hover { background: #ff4d8d; }
+  .tiny-note { font-size: 0.75rem; color: #aaa; margin-top: 14px; font-family: 'Poppins', sans-serif; }
+
+  /* ===================== SCREEN 2 - NAME CHECK ===================== */
+  #s2 { background: linear-gradient(135deg, #fff0fb, #fffde0); text-align: center; gap: 16px; }
+  .s2-q { font-family: 'Poppins', sans-serif; font-size: 1.4rem; color: var(--dark); line-height: 1.6; }
+  .name-input {
+    border: 3px dashed var(--pink);
+    border-radius: 16px;
+    padding: 14px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.6rem;
+    width: 100%;
+    max-width: 320px;
+    background: white;
+    color: var(--dark);
+    text-align: center;
+    outline: none;
+  }
+  .name-input:focus { border-color: var(--sky); box-shadow: 0 0 0 4px #4d96ff22; }
+
+  /* ===================== SCREEN 3 - WAIT ARE YOU SURE ===================== */
+  #s3 { background: #fff0f5; text-align: center; gap: 20px; }
+  .confused { font-size: 5rem; animation: wobble 1s infinite; display: block; }
+  @keyframes wobble {
+    0%,100% { transform: rotate(0deg); }
+    25% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+  }
+  .s3-text { font-family: 'Poppins', sans-serif; font-size: 1.3rem; color: var(--dark); line-height: 1.6; }
+  .btn-yes { background: var(--mint); color: white; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1rem; font-weight: 900; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 5px 0 #3da84a; margin: 5px; }
+  .btn-no { background: #ddd; color: #666; border: none; border-radius: 50px; padding: 14px 36px; font-size: 1.1rem; font-weight: 900; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 5px 0 #aaa; margin: 5px; transition: all 0.3s; }
+
+  /* ===================== SCREEN 4 - LOADING LOVE ===================== */
+  #s4 { background: var(--dark); text-align: center; gap: 20px; }
+  .load-title { font-family: 'Dancing Script', cursive; color: var(--pink); font-size: 1.8rem; }
+  .load-bar-wrap { width: 80%; max-width: 300px; background: #444; border-radius: 50px; height: 20px; overflow: hidden; }
+  .load-bar { height: 100%; background: linear-gradient(90deg, var(--pink), var(--yellow), var(--pink)); background-size: 200%; width: 0%; border-radius: 50px; animation: fillLoad 2.5s ease forwards, shimmer 1s linear infinite; }
+  @keyframes fillLoad { to { width: 100%; } }
+  @keyframes shimmer { 0% { background-position: 0%; } 100% { background-position: 200%; } }
+  .load-items { text-align: left; color: #aaa; font-family: 'Poppins', sans-serif; font-size: 1.2rem; line-height: 2; }
+  .load-item { opacity: 0; animation: fadeItem 0.4s ease forwards; }
+  .load-item:nth-child(1) { animation-delay: 0.3s; }
+  .load-item:nth-child(2) { animation-delay: 0.8s; }
+  .load-item:nth-child(3) { animation-delay: 1.3s; }
+  .load-item:nth-child(4) { animation-delay: 1.8s; }
+  @keyframes fadeItem { to { opacity: 1; } }
+
+  /* ===================== SCREEN 5 - PHOTO SURPRISE ===================== */
+  #s5 { background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); gap: 0; padding: 0; overflow: hidden; }
+  .photo-reveal-container { width: 100%; height: 100dvh; position: relative; }
+  .photo-card {
+    position: absolute;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    opacity: 0;
+    transform: scale(0.3) rotate(20deg);
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+  }
+  .photo-card.show { opacity: 1; transform: scale(1) rotate(var(--rot)); }
+  .photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .photo-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    padding: 20px 12px 10px;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  .tap-hint {
+    position: absolute;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.6);
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    animation: pulse 1.5s ease-in-out infinite;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  @keyframes pulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+  /* ===================== SCREEN 6 - REASONS ===================== */
+  #s6 { background: linear-gradient(160deg, #fff0f5, #f0f8ff); padding-top: 40px; gap: 16px; justify-content: flex-start; }
+  .s6-title { font-family: 'Dancing Script', cursive; color: var(--pink); font-size: 1.8rem; text-align: center; margin-bottom: 5px; }
+  .reason-card {
+    background: white;
+    border-radius: 20px;
+    padding: 16px 20px;
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    border-left: 5px solid var(--border-col, var(--pink));
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: all 0.5s ease;
+  }
+  .reason-card.show { opacity: 1; transform: translateX(0); }
+  .reason-num { font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--border-col, var(--pink)); min-width: 40px; }
+  .reason-text { font-family: 'Poppins', sans-serif; font-size: 1rem; color: var(--dark); line-height: 1.5; }
+
+  /* ===================== SCREEN 7 - MEMORIES ===================== */
+  #s7 { background: #0d0d0d; gap: 0; padding: 30px 16px; justify-content: flex-start; }
+  .s7-title { font-family: 'Dancing Script', cursive; color: var(--yellow); font-size: 1.6rem; margin-bottom: 20px; text-align: center; }
+  .memory-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    max-width: 400px;
+  }
+  .memory-item { position: relative; }
+  .memory-img-wrap {
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    transform: rotate(var(--rot, 0deg));
+  }
+  .memory-img-wrap img { width: 100%; display: block; }
+  .memory-sticker {
+    position: absolute;
+    font-size: 2.5rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    animation: stickerBounce 2s ease-in-out infinite alternate;
+  }
+  @keyframes stickerBounce { from { transform: scale(1) rotate(-5deg); } to { transform: scale(1.15) rotate(5deg); } }
+  .memory-caption {
+    font-family: 'Poppins', sans-serif;
+    color: #ddd;
+    font-size: 0.95rem;
+    margin-top: 12px;
+    padding: 0 8px;
+    line-height: 1.6;
+  }
+  .memory-caption span { color: var(--pink); }
+
+  /* ===================== SCREEN 8 - FINAL ===================== */
+  #s8 { background: radial-gradient(ellipse at center, #ff6b9d22 0%, var(--cream) 70%); text-align: center; gap: 16px; }
+  .big-heart { font-size: 6rem; animation: heartbeat 1s ease-in-out infinite; display: block; }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    14% { transform: scale(1.15); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.1); }
+    70% { transform: scale(1); }
+  }
+  .final-title { font-family: 'Dancing Script', cursive; font-size: 2rem; color: var(--pink); line-height: 1.3; }
+  .final-msg { font-family: 'Poppins', sans-serif; font-size: 1rem; color: var(--dark); line-height: 1.7; max-width: 340px; }
+  .final-sign { font-family: 'Dancing Script', cursive; font-size: 1.3rem; color: var(--orange); margin-top: 10px; }
+  .confetti-btn { background: linear-gradient(135deg, var(--pink), var(--orange)); color: white; border: none; border-radius: 50px; padding: 16px 36px; font-size: 1.1rem; font-weight: 900; font-family: 'Poppins', sans-serif; cursor: pointer; box-shadow: 0 6px 0 #c94730; margin-top: 10px; }
+  .confetti-piece {
+    position: fixed;
+    top: -20px;
+    width: 10px;
+    height: 14px;
+    border-radius: 3px;
+    pointer-events: none;
+    z-index: 9999;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* NAV DOTS */
+  .nav-dots {
+    position: fixed;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+  }
+  .nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #ddd;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .nav-dot.active { background: var(--pink); transform: scale(1.4); }
+
+  /* STICKER EXPLOSION */
+  .sticker-pop { position: fixed; pointer-events: none; font-size: 2rem; z-index: 999; animation: popFly 0.8s ease forwards; }
+  @keyframes popFly { 0% { transform: scale(0) translateY(0); opacity: 1; } 100% { transform: scale(1.5) translateY(-60px); opacity: 0; } }
+  @keyframes loveFloat {
+    0%   { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+    60%  { opacity: 1; }
+    100% { transform: translateY(-90px) scale(1.4) rotate(20deg); opacity: 0; }
+  }
+
+  /* Mobile tweaks */
+  @media(max-width: 380px) {
+    .s1-title { font-size: 1.7rem; }
+    .final-title { font-size: 1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating hearts bg -->
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- NAV DOTS -->
+<div class="nav-dots" id="navDots"></div>
+
+<!-- ===== SCREEN 1 ===== -->
+<div class="screen active" id="s1">
+  <span class="knock-emoji">🚪</span>
+  <h1 class="s1-title">Hey you...<br>yes, YOU 👀</h1>
+  <p class="s1-sub">Someone made something<br>just for you. Open it?</p>
+  <button class="btn-main" onclick="goTo(2)">Okay fine, show me 👉</button>
+  <p class="tiny-note">(warning: may cause feelings 💀)</p>
+</div>
+
+<!-- ===== SCREEN 2 ===== -->
+<div class="screen" id="s2">
+  <p class="s2-q">First... tell me your name?<br><span style="font-size:1.2rem;color:#aaa">(or what he calls you 👀)</span></p>
+  <input class="name-input" id="nameInput" placeholder="type here..." maxlength="20" />
+  <button class="btn-main" onclick="checkName()">That's me! ➜</button>
+</div>
+
+<!-- ===== SCREEN 3 ===== -->
+<div class="screen" id="s3">
+  <span class="confused">🤔</span>
+  <p class="s3-text" id="s3text">Hmm... are you sure?<br>This is only for <strong>his girl.</strong></p>
+  <div>
+    <button class="btn-yes" onclick="goTo(4)">YES it's me!! 🙋‍♀️</button>
+    <button class="btn-no" id="noBtn" onclick="moveNoBtn()">No 😅</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 4 ===== -->
+<div class="screen" id="s4">
+  <p class="load-title">Loading your surprise... 💝</p>
+  <div class="load-bar-wrap"><div class="load-bar" id="loadBar"></div></div>
+  <div class="load-items">
+    <div class="load-item">✅ Loading all the love...</div>
+    <div class="load-item">✅ Hiding the cringe...</div>
+    <div class="load-item">✅ Adding extra you-are-amazing...</div>
+    <div class="load-item">✅ YOU'RE READY 🎉</div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 5 ===== -->
+<div class="screen" id="s5">
+  <div class="photo-reveal-container" id="photoReveal">
+    <div class="tap-hint" id="tapHint">✨ tap anywhere ✨</div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 6 ===== -->
+<div class="screen" id="s6">
+  <h2 class="s6-title">Why you're everything 💕</h2>
+  <div id="reasonsList" style="width:100%;max-width:380px;display:flex;flex-direction:column;gap:12px;padding-bottom:20px;"></div>
+  <button class="btn-main" onclick="goTo(7)" style="margin-top:10px;">Show me more 🥹</button>
+</div>
+
+<!-- ===== SCREEN 7 ===== -->
+<div class="screen" id="s7">
+  <h2 class="s7-title">Our little moments 🌙</h2>
+  <div class="memory-strip" id="memoryStrip"></div>
+  <button class="btn-main" onclick="goTo(8)" style="margin-top:30px; background: var(--yellow); color: var(--dark); box-shadow: 0 6px 0 #c9a000;">One last thing... 💌</button>
+</div>
+
+<!-- ===== SCREEN 8 ===== -->
+<div class="screen" id="s8">
+  <span class="big-heart">❤️</span>
+  <h2 class="final-title" id="finalTitle">You are not alone.<br>You are my priority.</h2>
+  <p class="final-msg" id="finalMsg">
+    I know life gets loud and crazy and sometimes it feels like everyone's too busy for you. But I'm here. I see you. I choose you. Every single day. Even on the days I'm terrible at showing it. 😅
+  </p>
+  <p class="final-sign">— Your person 🫶</p>
+  <button class="confetti-btn" onclick="launchConfetti()">🎊 Celebrate us!</button>
+</div>
+
+<script>
+  // ===== DATA =====
+  const PHOTOS = [
+    { src: 'images/screenshare.jpeg', label: '📞 Even on a screen, you\'re the prettiest thing I see' },
+    { src: 'images/koluk.jpeg', label: '🌙 My favourite smile in the whole universe' },
+    { src: 'images/carnival.jpeg', label: '✨ Glowing like that at a carnival?? Unfair honestly' },
+    { src: 'images/mountain.jpeg', label: '🏔️ Above the clouds, with the only person I want to be with' },
+  ];
+
+  const REASONS = [
+    { text: "Your smile makes literally every problem disappear 🌞", col: "#ff6b9d" },
+    { text: "You're the funniest person when you're not even trying to be funny 😭", col: "#4d96ff" },
+    { text: "The way you actually care about people? That's rare. That's you.", col: "#6bcb77" },
+    { text: "You make every ordinary moment feel like it matters 💫", col: "#ffd93d" },
+    { text: "Being with you is my favourite place to be 🏠", col: "#ff922b" },
+    { text: "You are SO much more than you give yourself credit for 👑", col: "#ff6b9d" },
+  ];
+
+  const MEMORIES = [
+    { photo: 'images/mountain.jpeg', rot: '-2deg', sticker: '🏔️', sx: '5%', sy: '5%', caption: 'That day on top of the mountain — I remember thinking <span>\"I could stay here with her forever.\"</span> I still mean it.' },
+    { photo: 'images/carnival.jpeg', rot: '1.5deg', sticker: '🎡', sx: 'auto', sy: '8%', sright: '8%', caption: 'You + carnival lights + that glow? <span>Honestly a crime against everyone else there.</span>' },
+    { photo: 'images/koluk.jpeg', rot: '-1deg', sticker: '🌿', sx: '8%', sy: '8%', caption: '<span>This photo</span> lives in my head rent-free. You just look so... you. That\'s my favourite version of you.' },
+  ];
+
+  // ===== STATE =====
+  let currentScreen = 1;
+  let userName = '';
+  let photosShown = 0;
+  let noCount = 0;
+
+  // ===== INIT =====
+  const totalScreens = 8;
+  const navDots = document.getElementById('navDots');
+  for (let i = 1; i <= totalScreens; i++) {
+    const d = document.createElement('div');
+    d.className = 'nav-dot' + (i === 1 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    navDots.appendChild(d);
+  }
+
+  // Generate floating hearts
+  const heartsBg = document.getElementById('heartsBg');
+  const heartEmojis = ['❤️','💕','💖','💗','💓','✨','💝','🌸'];
+  for (let i = 0; i < 18; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart-float';
+    h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    h.style.left = Math.random() * 100 + '%';
+    h.style.animationDuration = (8 + Math.random() * 12) + 's';
+    h.style.animationDelay = (Math.random() * 10) + 's';
+    h.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+    heartsBg.appendChild(h);
+  }
+
+  // ===== NAVIGATION =====
+  function goTo(n) {
+    document.getElementById('s' + currentScreen).classList.remove('active');
+    currentScreen = n;
+    document.getElementById('s' + n).classList.add('active');
+    // Update dots
+    document.querySelectorAll('.nav-dot').forEach((d, i) => {
+      d.classList.toggle('active', i + 1 === n);
+    });
+    // Screen init
+    if (n === 4) initLoadingScreen();
+    if (n === 5) initPhotoScreen();
+    if (n === 6) initReasons();
+    if (n === 7) initMemories();
+    if (n === 8) initFinal();
+    // Scroll to top
+    window.scrollTo(0, 0);
+  }
+
+  // ===== SCREEN 2 - NAME =====
+  function checkName() {
+    const val = document.getElementById('nameInput').value.trim();
+    userName = val || 'you';
+    document.getElementById('s3text').innerHTML = `Hmm... "<strong>${userName}"</strong>?<br>Are you SURE this is for you? 👀`;
+    goTo(3);
+  }
+  document.getElementById('nameInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkName();
+  });
+
+  // ===== SCREEN 3 - NO BUTTON =====
+  function moveNoBtn() {
+    noCount++;
+    const btn = document.getElementById('noBtn');
+    const positions = [
+      { top: '65%', left: '10%' }, { top: '20%', left: '60%' },
+      { top: '75%', left: '65%' }, { top: '30%', left: '5%' },
+      { top: '80%', left: '30%' },
+    ];
+    if (noCount < positions.length) {
+      const pos = positions[noCount - 1];
+      btn.style.position = 'fixed';
+      btn.style.top = pos.top;
+      btn.style.left = pos.left;
+      btn.style.zIndex = '200';
+    } else {
+      btn.style.display = 'none';
+      document.getElementById('s3text').innerHTML = `Okay okay 😂<br>We know it's you, <strong>${userName}!</strong>`;
+    }
+  }
+
+  // ===== SCREEN 4 - LOADING =====
+  function initLoadingScreen() {
+    setTimeout(() => goTo(5), 3200);
+  }
+
+  // ===== SCREEN 5 - PHOTOS =====
+  function initPhotoScreen() {
+    photosShown = 0;
+    const container = document.getElementById('photoReveal');
+    container.querySelectorAll('.photo-card').forEach(c => c.remove());
+
+    // Positions spread nicely on mobile - each card gets a fixed spot
+    // z-index increases as each is revealed so newest is always on top
+    const layouts = [
+      { top: '6%',  left: '4%',   width: '60%', rot: '-4deg'  },
+      { top: '10%', right: '3%',  width: '58%', rot: '5deg'   },
+      { top: '44%', left: '6%',   width: '62%', rot: '-3deg'  },
+      { top: '48%', right: '4%',  width: '56%', rot: '4deg'   },
+    ];
+
+    PHOTOS.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      const l = layouts[i];
+      card.style.cssText = `
+        top: ${l.top || 'auto'};
+        left: ${l.left || 'auto'};
+        right: ${l.right || 'auto'};
+        width: ${l.width};
+        aspect-ratio: 3/4;
+        --rot: ${l.rot};
+        z-index: ${i + 1};
+      `;
+      card.innerHTML = `
+        <img src="${p.src}" alt="memory" loading="eager" />
+        <div class="photo-label">${p.label}</div>
+      `;
+      container.appendChild(card);
+    });
+
+    // Show first immediately, rest on tap
+    showNextPhoto();
+    container.addEventListener('click', showNextPhoto);
+  }
+
+  function showNextPhoto() {
+    const cards = document.querySelectorAll('.photo-card');
+    if (photosShown < cards.length) {
+      const card = cards[photosShown];
+      // Bump z-index so each new card is on top of all previous
+      card.style.zIndex = 10 + photosShown;
+      card.classList.add('show');
+      photosShown++;
+      spawnSticker(card);
+      loveShower(); // 💕 burst on every photo reveal
+    }
+    if (photosShown >= cards.length) {
+      document.getElementById('tapHint').textContent = '💕 tap to continue';
+      document.getElementById('photoReveal').addEventListener('click', () => {
+        setTimeout(() => goTo(6), 300);
+      }, { once: true });
+    }
+  }
+
+  // ===== LOVE SHOWER - hearts burst from random positions =====
+  function loveShower() {
+    const loveEmojis = ['❤️','💕','💖','💗','🌸','✨','💝','😍','🥰','💓'];
+    const count = 12;
+    for (let i = 0; i < count; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.style.cssText = `
+          position: fixed;
+          pointer-events: none;
+          font-size: ${1.2 + Math.random() * 1.5}rem;
+          z-index: 9999;
+          left: ${5 + Math.random() * 90}vw;
+          top: ${20 + Math.random() * 60}vh;
+          animation: loveFloat ${0.8 + Math.random() * 0.8}s ease forwards;
+          opacity: 1;
+        `;
+        el.textContent = loveEmojis[Math.floor(Math.random() * loveEmojis.length)];
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1600);
+      }, i * 80);
+    }
+  }
+
+  // ===== SCREEN 6 - REASONS =====
+  function initReasons() {
+    const list = document.getElementById('reasonsList');
+    list.innerHTML = '';
+    REASONS.forEach((r, i) => {
+      const card = document.createElement('div');
+      card.className = 'reason-card';
+      card.style.setProperty('--border-col', r.col);
+      card.innerHTML = `<span class="reason-num" style="color:${r.col}">${i+1}</span><span class="reason-text">${r.text}</span>`;
+      list.appendChild(card);
+      setTimeout(() => card.classList.add('show'), 150 * i + 100);
+    });
+  }
+
+  // ===== SCREEN 7 - MEMORIES =====
+  function initMemories() {
+    const strip = document.getElementById('memoryStrip');
+    strip.innerHTML = '';
+    MEMORIES.forEach((m, i) => {
+      const item = document.createElement('div');
+      item.className = 'memory-item';
+      item.style.opacity = 0;
+      item.innerHTML = `
+        <div class="memory-img-wrap" style="--rot:${m.rot}">
+          <img src="${m.photo}" alt="memory" loading="eager" />
+          <span class="memory-sticker" style="top:${m.sy};left:${m.sx || 'auto'};right:${m.sright || 'auto'}">${m.sticker}</span>
+        </div>
+        <p class="memory-caption">${m.caption}</p>
+      `;
+      strip.appendChild(item);
+      setTimeout(() => {
+        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        item.style.opacity = 1;
+      }, 300 * i + 200);
+    });
+  }
+
+  // ===== SCREEN 8 - FINAL =====
+  function initFinal() {
+    const title = document.getElementById('finalTitle');
+    if (userName && userName !== 'you') {
+      title.innerHTML = `${userName},<br>you are not alone. 💕`;
+    }
+    // Big love shower entrance
+    setTimeout(() => loveShower(), 400);
+    setTimeout(() => loveShower(), 900);
+  }
+
+  // ===== CONFETTI =====
+  function launchConfetti() {
+    const colors = ['#ff6b9d','#ffd93d','#6bcb77','#4d96ff','#ff922b','#fff'];
+    for (let i = 0; i < 80; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.width = (6 + Math.random() * 8) + 'px';
+      c.style.height = (8 + Math.random() * 12) + 'px';
+      c.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+      c.style.animationDelay = (Math.random() * 0.5) + 's';
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4000);
+    }
+    // heart burst from center
+    const hearts = ['❤️','💕','💖','🌸','✨','💝'];
+    for (let i = 0; i < 12; i++) {
+      setTimeout(() => {
+        const h = document.createElement('div');
+        h.className = 'sticker-pop';
+        h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        h.style.left = (20 + Math.random() * 60) + 'vw';
+        h.style.top = (30 + Math.random() * 40) + 'vh';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 1000);
+      }, i * 100);
+    }
+  }
+
+  // ===== STICKER ON PHOTO REVEAL =====
+  function spawnSticker(el) {
+    const stickers = ['💕','✨','🥰','💖','🌟','😍','🎉'];
+    const s = document.createElement('div');
+    s.className = 'sticker-pop';
+    s.textContent = stickers[Math.floor(Math.random() * stickers.length)];
+    const rect = el.getBoundingClientRect();
+    s.style.left = (rect.left + rect.width / 2 - 20) + 'px';
+    s.style.top = (rect.top + rect.height / 2) + 'px';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 900);
+  }
+</script>
+</body>
+</html>
